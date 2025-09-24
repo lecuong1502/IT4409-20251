@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Semantic Web Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+        header, nav, main, article, aside, footer {
+            margin: 10px;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        header {
+            text-align: center;
+            background-color: #007bff;
+            color: white;
+        }
+        nav ul {
+            list-style: none;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        main {
+            display: flex;
+            gap: 20px;
+        }
+        article {
+            flex: 2;
+        }
+        aside {
+            flex: 1;
+        }
+        footer {
+            text-align: center;
+            font-size: 0.9em;
+            color: #777;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>My Website</h1>
+        <p>Using HTML5 Semantic Tags</p>
+    </header>
+
+    <nav>
+        <ul>
+            <li><a href="#">Home</a></li>
+            <li><a href="#">About</a></li>
+            <li><a href="#">Services</a></li>
+            <li><a href="#">Contact</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <article>
+            <h2>Main Article</h2>
+            <p>This is the main content of the web page. The **`article`** tag represents a self-contained, redistributable piece of content.</p>
+            <section>
+                <h3>Article Subsection</h3>
+                <p>The **`section`** tag is used to group related content thematically.</p>
+            </section>
+        </article>
+        <aside>
+            <h3>Sidebar Information</h3>
+            <p>The **`aside`** tag is for content that is related to the main content but is separate from it, such as a sidebar or an advertisement.</p>
+        </aside>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Semantic Web Page. All rights reserved.</p>
+    </footer>
+
+</body>
+</html>

@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Facebook - Sign Up</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1), 0 8px 16px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .header img {
+            height: 50px;
+            margin-bottom: 10px;
+        }
+
+        .header h2,
+        .header p {
+            margin: 0;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="password"] {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            box-sizing: border-box;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 10px;
+        }
+
+        .form-row input {
+            flex: 1;
+        }
+
+        .dob-label,
+        .gender-label {
+            text-align: left;
+            font-size: 13px;
+            color: #606770;
+        }
+
+        .dob-select {
+            display: flex;
+            gap: 10px;
+        }
+
+        .dob-select select {
+            flex: 1;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+        }
+
+        .gender-radio {
+            display: flex;
+            gap: 10px;
+            justify-content: space-around;
+        }
+
+        .gender-radio label {
+            flex: 1;
+            border: 1px solid #ddd;
+            padding: 8px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .terms {
+            font-size: 12px;
+            color: #777;
+            text-align: left;
+        }
+
+        button {
+            background-color: #00a400;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 6px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+    </style>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const daySelect = document.getElementById('day');
+            const monthSelect = document.getElementById('month');
+            const yearSelect = document.getElementById('year');
+
+            for (let i = 1; i <= 31; i++) {
+                const option = document.createElement('option');
+                option.value = i;
+                option.textContent = i;
+                daySelect.appendChild(option);
+            }
+
+            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            months.forEach((month, index) => {
+                const option = document.createElement('option');
+                option.value = index + 1;
+                option.textContent = month;
+                monthSelect.appendChild(option);
+            });
+
+            const currentYear = new Date().getFullYear();
+            for (let i = currentYear; i >= 1900; i--) {
+                const option = document.createElement('option');
+                option.value = i;
+                option.textContent = i;
+                yearSelect.appendChild(option);
+            }
+
+            // Basic form validation
+            const form = document.getElementById('registration-form');
+            form.addEventListener('submit', (e) => {
+                e.preventDefault();
+
+                const password = document.querySelector('input[type="password"]').value;
+                const email = document.querySelector('input[type="email"]').value;
+
+                if (password.length < 6) {
+                    alert('Password must be at least 6 characters long.');
+                    return;
+                }
+
+                // Simple email regex for basic validation
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(email)) {
+                    alert('Please enter a valid email address.');
+                    return;
+                }
+
+                alert('Registration successful!');
+            });
+        })
+    </script>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <img src="https://static.xx.fbcdn.net/rsrc.php/y1/r/4lCu2zih0ca.svg" alt="Facebook Logo">
+            <h2>Create a new account</h2>
+            <!-- <p>It's quick and easy.</p> -->
+        </div>
+        <form id="registration-form">
+            <div class="form-row">
+                <input type="text" placeholder="First name" required>
+                <input type="text" placeholder="Last name" required>
+            </div>
+            <input type="email" placeholder="Mobile number or email" required>
+            <input type="password" placeholder="New password" required>
+
+            <p class="dob-label">Date of birth</p>
+            <div class="dob-select">
+                <select name="day" id="day"></select>
+                <select name="month" id="month"></select>
+                <select name="year" id="year"></select>
+            </div>
+
+            <p class="gender-label">Gender</p>
+            <div class="gender-radio">
+                <label><input type="radio" name="gender" value="male" required> Male</label>
+                <label><input type="radio" name="gender" value="female"> Female</label>
+                <label><input type="radio" name="gender" value="custom"> Custom</label>
+            </div>
+
+            <p class="terms">By clicking Sign Up, you agree to our Terms, Privacy Policy and Cookies Policy.</p>
+
+            <button type="submit">Sign Up</button>
+        </form>
+    </div>
+</body>
+
+</html>
