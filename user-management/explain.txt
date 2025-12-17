@@ -1,0 +1,71 @@
+- Backend: 
++ Giới hạn Page/Limit: 
+Nếu user gửi page = -5 hoặc limit = 1000000 (1 triệu dòng), server sẽ phải xử lý một query khổng lồ, gây tràn bộ nhớ (RAM) hoặc treo database.
+
+const page = Math.max(1, parseInt(req.query.page) || 1);
+const limit = Math.max(1, Math.min(100, parseInt(req.query.limit) || 5));
+
+trong đó:   Math.max(1, ...): Đảm bảo số không bao giờ nhỏ hơn 1.
+            Math.min(100, ...): Hard Limit. Dù Frontend có lấy 1000 dòng, Backend cũng chỉ trả tối đa 100.
+
++ Chuẩn hóa & Validate dữ liệu:
+Người dùng nhập " nguyen van a " (thừa khoảng trắng), hoặc gửi ID linh tinh "abcxyz".
+
+Schema mongoose:
+    trim: true: Tự động cắt khoảng trắng đầu cuối ngay khi lưu vào DB.
+    unique: true (ở email): Database sẽ tự tạo index để đảm bảo không ai trùng email.
+    min: [0, ...]: Chặn số âm ngay từ cửa ngõ Model.
+
+Validate ID trước khi tìm:
+if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(400).json(...) // Dừng ngay, không gọi vào DB
+}
+
++ Cập nhật dữ liệu:
+Giả sử User có { name: "A", age: 20 }. Người dùng gửi lên chỉ muốn sửa tên: { name: "B" }. 
+Nếu dùng cách cũ: findByIdAndUpdate(id, { name: "B", age: undefined }) -> DB sẽ mất trường tuổi hoặc lưu đè thành null
+
+User.findByIdAndUpdate(id, { $set: req.body }, { new: true, runValidators: true });
+
+trong đó: $set: Chỉ cập nhật những trường CÓ trong req.body. Trường nào không gửi lên thì giữ nguyên giá trị cũ trong Database.
+            runValidators: true: Ép Mongoose chạy lại các rule (như min, max, enum) khi update (mặc định Mongoose chỉ check khi create).
+
++ Truy vấn song song (Promise.all):
+Chạy User.find(...) -> Mất 2 giây.
+Chạy xong mới User.countDocuments(...) -> Mất 1 giây. -> Tổng thời gian user phải đợi: 3 giây.
+
+const [users, total] = await Promise.all([
+    User.find(...),          // Luồng 1
+    User.countDocuments(...) // Luồng 2
+]);
+
+-> Tổng thời gian: Chỉ bằng luồng chậm nhất (2 giây). Hiệu năng tăng đáng kể.
+
+- Frontend:
++ Số thứ tự (STT) tăng liên tục:
+
+const startIndex = (page - 1) * limit;
+// STT hiển thị = startIndex + index (vị trí trong mảng hiện tại) + 1
+
+Ví dụ: Trang 2, mỗi trang 10 dòng thì: (2 - 1) * 10 = 10.
+-> Phần tử đầu tiên của trang 2 (index 0) sẽ có STT là: 10 + 0 + 1 = 11.
+
++ Reset Page về 1 khi đổi Limit
+Logic:
+User đang ở Trang 10, mỗi trang 5 dòng (Tổng 50 bản ghi).
+User đổi sang hiển thị 50 dòng/trang.
+Lúc này tổng số trang chỉ còn là 1.
+Nếu user vẫn đứng ở page = 10 -> Dữ liệu trống trơn. 
+Giải pháp: Bắt buộc phải setPage(1) ngay khi sự kiện onChange của ô Select Limit xảy ra.
+
++ Chuẩn hóa dữ liệu trước khi gửi (Sanitize)
+const cleanData = {
+    ...formData,
+    name: formData.name.trim(), // Cắt gọt sạch sẽ
+    age: Number(formData.age)   // Ép kiểu số chắc chắn
+};
+
++ Xử lý lỗi chi tiết (HTTP Status Code):
+400 Bad Request: Lỗi do Người dùng. (Ví dụ: Nhập thiếu tên, Email sai định dạng). -> Thông báo: "Vui lòng kiểm tra lại thông tin nhập vào".
+404 Not Found: Lỗi do Sai đường dẫn/ID. (Ví dụ: Xóa một user đã bị xóa bởi người khác trước đó). -> Thông báo: "Dữ liệu không tồn tại hoặc đã bị xóa".
+500 Internal Server Error: Lỗi do Server (Code sai, DB sập). -> Thông báo: "Lỗi hệ thống, vui lòng quay lại sau".
