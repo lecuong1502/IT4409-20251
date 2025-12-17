@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
@@ -7,6 +9,8 @@ const app = express();
 // Middleware
 app.use(cors());
 app.use(express.json());
+
+console.log("Check URI:", process.env.MONGO_URI);
 
 // Connect to MongoDB
 mongoose
