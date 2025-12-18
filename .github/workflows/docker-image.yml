@@ -31,8 +31,8 @@ jobs:
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
-          context: .
-          file: Dockerfile
+          context: ./user-management/backend
+          file: ./user-management/backend/Dockerfile
           push: true
           tags: cuongle1502/it4409-sample:staging
 
