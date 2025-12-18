@@ -26,8 +26,7 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      # 4. Build Docker image và push lên Docker Hub, lưu ý trường tags: có dạng dockerhub-username/image-name:tag
-      # Ví dụ nếu tên tài khoản dockerhub của bạn là A => đặt là A/it4409-sample:staging chẳng hạn
+      # 4. Build Docker image và push lên Docker Hub, lưu ý trường tags: có dạng dockerhub-username/image-name:tag]
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
